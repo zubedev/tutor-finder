@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <section>Contact Tutor</section>
 </template>
 
 <script>
