@@ -1,9 +1,9 @@
 <template>
-  <base-card>
-    <section>FILTER</section>
-  </base-card>
-  <base-card>
-    <section>
+  <section>
+    <TutorFilter @change-filter="setFilters" />
+  </section>
+  <section>
+    <base-card>
       <div class="controls">
         <base-button mode="outline">Refresh</base-button>
         <base-button link to="/register">Register as Tutor</base-button>
@@ -20,21 +20,39 @@
         />
       </ul>
       <h3 v-else>No tutors found!</h3>
-    </section>
-  </base-card>
+    </base-card>
+  </section>
 </template>
 
 <script>
 import TutorItem from "@/components/tutors/TutorItem";
+import TutorFilter from "@/components/tutors/TutorFilter";
 export default {
-  components: { TutorItem },
+  components: { TutorItem, TutorFilter },
+  data() {
+    return {
+      filters: {
+        frontend: true,
+        backend: true,
+        career: true
+      }
+    }
+  },
   computed: {
     hasTutors() {
       return this.$store.getters['tutors/hasTutors'];
     },
     filteredTutors() {
-      return this.$store.getters['tutors/tutorsList'];
+      return this.$store.getters['tutors/tutorsList'].filter(tutor => {
+        if (this.filters.frontend && tutor.areas.includes('frontend')) { return true; }
+        if (this.filters.backend && tutor.areas.includes('backend')) { return true; }
+        if (this.filters.career && tutor.areas.includes('career')) { return true; }
+        return false;
+      });
     }
+  },
+  methods: {
+    setFilters(filters) { this.filters = filters; }
   }
 }
 </script>
