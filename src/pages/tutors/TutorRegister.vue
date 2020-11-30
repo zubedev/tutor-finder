@@ -1,7 +1,15 @@
 <template>
-  <section>Register</section>
+  <section>
+    <base-card>
+      <h2>Register as a Tutor now!</h2>
+      <TutorForm />
+    </base-card>
+  </section>
 </template>
 
 <script>
-export default {}
+import TutorForm from "@/components/tutors/TutorForm";
+export default {
+  components: { TutorForm }
+}
 </script>
