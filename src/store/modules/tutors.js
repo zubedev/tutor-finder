@@ -8,8 +8,7 @@ export default {
                     firstName: 'Maximilian',
                     lastName: 'Schwarzmüller',
                     areas: ['frontend', 'backend'],
-                    description:
-                        "I'm Maximilian and I've worked as a freelance web developer for years. Let me help you become a developer as well!",
+                    description: "I'm Maximilian and I've worked as a freelance web developer for years. Let me help you become a developer as well!",
                     hourlyRate: 30
                 },
                 {
@@ -17,21 +16,33 @@ export default {
                     firstName: 'Julie',
                     lastName: 'Jones',
                     areas: ['frontend', 'career'],
-                    description:
-                        'I am Julie and as a senior developer in a big tech company, I can help you get your first job or progress in your current role.',
+                    description: 'I am Julie and as a senior developer in a big tech company, I can help you get your first job or progress in your current role.',
                     hourlyRate: 25
                 }
             ]
         }
     },
-    mutations: {},
-    actions: {},
+    mutations: {
+        registerTutor(state, payload) {
+            state.tutors.push(payload);
+        }
+    },
+    actions: {
+        registerTutor(context, payload) {
+            payload.id = context.rootGetters['auth/getUserId'];
+            context.commit('registerTutor', payload);
+        }
+    },
     getters: {
         tutorsList(state) {
             return state.tutors;
         },
         hasTutors(state) {
             return state.tutors && state.tutors.length > 0;
+        },
+        isTutor(state, getters, rootState, rootGetters) {
+            const userId = rootGetters['auth/getUserId'];
+            return state.tutors.some(tutor => tutor.id === userId);
         }
     }
 }
