@@ -2,22 +2,22 @@
   <form @submit.prevent="submitForm">
     <div class="form-control" :class="{invalid: !fields.firstName.isValid}">
       <label for="firstName">First name</label>
-      <input type="text" id="firstName" v-model.trim="fields.firstName.value" @keyup="validateField('firstName')">
+      <input type="text" id="firstName" :required="fields.firstName.required" v-model.trim="fields.firstName.value" @keyup="validateField('firstName')">
       <p v-if="!fields.firstName.isValid">First name can not be empty</p>
     </div>
     <div class="form-control" :class="{invalid: !fields.lastName.isValid}">
       <label for="lastName">Last name</label>
-      <input type="text" id="lastName" v-model.trim="fields.lastName.value" @keyup="validateField('lastName')">
+      <input type="text" id="lastName" :required="fields.lastName.required" v-model.trim="fields.lastName.value" @keyup="validateField('lastName')">
       <p v-if="!fields.lastName.isValid">Last name can not be empty</p>
     </div>
     <div class="form-control" :class="{invalid: !fields.description.isValid}">
       <label for="description">Description</label>
-      <textarea rows="3" id="description" v-model.trim="fields.description.value" @keyup="validateField('description')"></textarea>
+      <textarea rows="3" id="description" :required="fields.description.required" v-model.trim="fields.description.value" @keyup="validateField('description')"></textarea>
       <p v-if="!fields.description.isValid">Description can not be empty</p>
     </div>
     <div class="form-control" :class="{invalid: !fields.hourlyRate.isValid}">
       <label for="hourlyRate">Hourly rate</label>
-      <input type="number" id="hourlyRate" v-model.number="fields.hourlyRate.value" @keyup="validateField('hourlyRate')">
+      <input type="number" id="hourlyRate" :required="fields.hourlyRate.required" v-model.number="fields.hourlyRate.value" @keyup="validateField('hourlyRate')">
       <p v-if="!fields.hourlyRate.isValid">Hourly rate can not be empty or negative</p>
     </div>
     <div class="form-control" :class="{invalid: !fields.areas.isValid}">
@@ -47,10 +47,10 @@ export default {
   data() {
     return {
       fields: {
-        firstName: { value: '', isValid: true },
-        lastName: { value: '', isValid: true },
-        description: { value: '', isValid: true },
-        hourlyRate: { value: null, isValid: true },
+        firstName: { value: '', required: true, isValid: true },
+        lastName: { value: '', required: true, isValid: true },
+        description: { value: '', required: true, isValid: true },
+        hourlyRate: { value: null, required: true, isValid: true },
         areas: { value: [], isValid: true },
       },
       formIsValid: true
@@ -72,7 +72,7 @@ export default {
     },
     submitForm() {
       for (const field in this.fields) { this.validateField(field); }
-      if (!this.formIsValid) { return }
+      if (!this.formIsValid) { return; }
 
       let formData = {}
       for (const field in this.fields) { formData[field] = this.fields[field].value; }
