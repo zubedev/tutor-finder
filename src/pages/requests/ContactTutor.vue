@@ -1,6 +1,10 @@
 <template>
+  <base-dialog :show="!!errorMessage" @close="handleError" title="An error has occured!">
+    <p>{{ errorMessage }}</p>
+  </base-dialog>
   <section>
-    <form @submit.prevent="submitForm">
+    <base-spinner v-if="isLoading"></base-spinner>
+    <form @submit.prevent="submitForm" v-else>
       <div class="form-control" :class="{errors: !fields.email.isValid}">
         <label for="email">Your Email</label>
         <input type="email" id="email" :required="fields.email.required" v-model.trim="fields.email.value" @keyup="validateField('email')">
@@ -27,7 +31,9 @@ export default {
         email: { value: '', required: true, isValid: true },
         message: { value: '', required: true, isValid: true },
       },
-      formIsValid: true
+      formIsValid: true,
+      isLoading: false,
+      errorMessage: null
     }
   },
   methods: {
@@ -41,15 +47,19 @@ export default {
       this.formIsValid = true; // reset
       for (const field in this.fields) { if (!this.fields[field].isValid) { this.formIsValid = false; } }
     },
-    submitForm() {
+    async submitForm() {
       for (const field in this.fields) { this.validateField(field); }
       if (!this.formIsValid) { return; }
 
+      this.isLoading = true;
       let formData = { tutorId: this.$route.params.id };
       for (const field in this.fields) { formData[field] = this.fields[field].value; }
-      this.$store.dispatch('requests/contactTutor', formData);
+      try { await this.$store.dispatch('requests/contactTutor', formData); }
+      catch (error) { this.errorMessage = error; }
+      this.isLoading = false;
       this.$router.replace('/tutors');
-    }
+    },
+    handleError() { this.errorMessage = null; }
   }
 }
 </script>
