@@ -45,8 +45,10 @@ export default {
       for (const field in this.fields) { this.validateField(field); }
       if (!this.formIsValid) { return; }
 
-      let formData = {}
+      let formData = { tutorId: this.$route.params.id };
       for (const field in this.fields) { formData[field] = this.fields[field].value; }
+      this.$store.dispatch('requests/contactTutor', formData);
+      this.$router.replace('/tutors');
     }
   }
 }
