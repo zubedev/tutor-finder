@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import RequestsItem from "../../components/requests/RequestsItem";
+import RequestsItem from "@/components/requests/RequestsItem";
 export default {
   components: { RequestsItem },
   computed: {

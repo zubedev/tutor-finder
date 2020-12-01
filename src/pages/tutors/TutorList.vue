@@ -1,14 +1,18 @@
 <template>
+  <base-dialog :show="!!errorMessage" @close="handleError" title="An error has occured!">
+    <p>{{ errorMessage }}</p>
+  </base-dialog>
   <section>
     <TutorFilter @change-filter="setFilters" />
   </section>
   <section>
     <base-card>
       <div class="controls">
-        <base-button mode="outline">Refresh</base-button>
-        <base-button link to="/register" v-if="!isTutor">Register as Tutor</base-button>
+        <base-button mode="outline" @click="loadTutors" :disabled="isLoading">Refresh</base-button>
+        <base-button link to="/register" v-if="!isTutor && !isLoading">Register as Tutor</base-button>
       </div>
-      <ul v-if="hasTutors">
+      <base-spinner v-if="isLoading"></base-spinner>
+      <ul v-else-if="hasTutors">
         <TutorItem
             v-for="tutor in filteredTutors"
             :key="tutor.id"
@@ -31,6 +35,8 @@ export default {
   components: { TutorItem, TutorFilter },
   data() {
     return {
+      isLoading: false,
+      errorMessage: null,
       filters: {
         frontend: true,
         backend: true,
@@ -40,7 +46,7 @@ export default {
   },
   computed: {
     isTutor() { return this.$store.getters['tutors/isTutor']; },
-    hasTutors() { return this.$store.getters['tutors/hasTutors']; },
+    hasTutors() { return !this.isLoading && this.$store.getters['tutors/hasTutors']; },
     filteredTutors() {
       return this.$store.getters['tutors/tutorsList'].filter(tutor => {
         if (this.filters.frontend && tutor.areas.includes('frontend')) { return true; }
@@ -51,8 +57,16 @@ export default {
     }
   },
   methods: {
-    setFilters(filters) { this.filters = filters; }
-  }
+    setFilters(filters) { this.filters = filters; },
+    handleError() { this.errorMessage = null; },
+    async loadTutors() {
+      this.isLoading = true;
+      try { await this.$store.dispatch('tutors/loadTutors'); }
+      catch (error) { this.errorMessage = error; }
+      this.isLoading = false;
+    },
+  },
+  created() { this.loadTutors(); }
 }
 </script>
 

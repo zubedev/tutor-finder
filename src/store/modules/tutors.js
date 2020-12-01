@@ -23,14 +23,33 @@ export default {
         }
     },
     mutations: {
-        registerTutor(state, payload) {
-            state.tutors.push(payload);
-        }
+        registerTutor(state, payload) { state.tutors.push(payload); },
+        setTutors(state, payload) { state.tutors = payload; }
     },
     actions: {
-        registerTutor(context, payload) {
-            payload.id = context.rootGetters['auth/getUserId'];
-            context.commit('registerTutor', payload);
+        async registerTutor(context, payload) {
+            const userId = context.rootGetters['auth/getUserId'];
+            const res = await fetch(`https://tut0r-finder.firebaseio.com/tutors/${userId}.json`, {
+                method: 'PUT', body: JSON.stringify(payload)
+            });
+            // const resBody = await res.json();
+            if (!res.ok) {
+                // error handling
+            } else {
+                payload.id = userId;
+                context.commit('registerTutor', payload);
+            }
+        },
+        async loadTutors(context) {
+            const res = await fetch('https://tut0r-finder.firebaseio.com/tutors.json');
+            const resBody = await res.json();
+            if (!res.ok) {
+                throw new Error(resBody.message || 'Failed to fetch');
+            } else {
+                let tutors = [];
+                for (const tutor in resBody) { tutors.push({...resBody[tutor], id: tutor}); }
+                context.commit('setTutors', tutors);
+            }
         }
     },
     getters: {
