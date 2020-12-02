@@ -1,31 +1,33 @@
 <template>
-  <base-dialog :show="!!errorMessage" @close="handleError" title="An error has occured!">
-    <p>{{ errorMessage }}</p>
-  </base-dialog>
-  <section>
-    <TutorFilter @change-filter="setFilters" />
-  </section>
-  <section>
-    <base-card>
-      <div class="controls">
-        <base-button mode="outline" @click="loadTutors(true)" :disabled="isLoading">Refresh</base-button>
-        <base-button link to="/register" v-if="!isTutor && !isLoading">Register as Tutor</base-button>
-      </div>
-      <base-spinner v-if="isLoading"></base-spinner>
-      <ul v-else-if="hasTutors">
-        <TutorItem
-            v-for="tutor in filteredTutors"
-            :key="tutor.id"
-            :id="tutor.id"
-            :first-name="tutor.firstName"
-            :last-name="tutor.lastName"
-            :rate="tutor.hourlyRate"
-            :areas="tutor.areas"
-        />
-      </ul>
-      <h3 v-else>No tutors found!</h3>
-    </base-card>
-  </section>
+  <div>
+    <base-dialog :show="!!errorMessage" @close="handleError" title="An error has occured!">
+      <p>{{ errorMessage }}</p>
+    </base-dialog>
+    <section>
+      <TutorFilter @change-filter="setFilters" />
+    </section>
+    <section>
+      <base-card>
+        <div class="controls">
+          <base-button mode="outline" @click="loadTutors(true)" :disabled="isLoading">Refresh</base-button>
+          <base-button link to="/register" v-if="!isTutor && !isLoading">Register as Tutor</base-button>
+        </div>
+        <base-spinner v-if="isLoading"></base-spinner>
+        <ul v-else-if="hasTutors">
+          <TutorItem
+              v-for="tutor in filteredTutors"
+              :key="tutor.id"
+              :id="tutor.id"
+              :first-name="tutor.firstName"
+              :last-name="tutor.lastName"
+              :rate="tutor.hourlyRate"
+              :areas="tutor.areas"
+          />
+        </ul>
+        <h3 v-else>No tutors found!</h3>
+      </base-card>
+    </section>
+  </div>
 </template>
 
 <script>

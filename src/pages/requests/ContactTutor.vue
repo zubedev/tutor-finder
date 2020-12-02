@@ -1,26 +1,28 @@
 <template>
-  <base-dialog :show="!!errorMessage" @close="handleError" title="An error has occured!">
-    <p>{{ errorMessage }}</p>
-  </base-dialog>
-  <section>
-    <base-spinner v-if="isLoading"></base-spinner>
-    <form @submit.prevent="submitForm" v-else>
-      <div class="form-control" :class="{errors: !fields.email.isValid}">
-        <label for="email">Your Email</label>
-        <input type="email" id="email" :required="fields.email.required" v-model.trim="fields.email.value" @keyup="validateField('email')">
-        <p v-if="!fields.email.isValid">Must provide a valid email address</p>
-      </div>
-      <div class="form-control" :class="{errors: !fields.message.isValid}">
-        <label for="message">Your Message</label>
-        <textarea rows="5" id="message" :required="fields.message.required" v-model.trim="fields.message.value" @keyup="validateField('message')"></textarea>
-        <p v-if="!fields.message.isValid">Must provide a message for tutor</p>
-      </div>
-      <p v-if="!formIsValid">Form is invalid, please check your input</p>
-      <div class="actions">
-        <base-button>Send Message</base-button>
-      </div>
-    </form>
-  </section>
+  <div>
+    <base-dialog :show="!!errorMessage" @close="handleError" title="An error has occured!">
+      <p>{{ errorMessage }}</p>
+    </base-dialog>
+    <section>
+      <base-spinner v-if="isLoading"></base-spinner>
+      <form @submit.prevent="submitForm" v-else>
+        <div class="form-control" :class="{errors: !fields.email.isValid}">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" :required="fields.email.required" v-model.trim="fields.email.value" @keyup="validateField('email')">
+          <p v-if="!fields.email.isValid">Must provide a valid email address</p>
+        </div>
+        <div class="form-control" :class="{errors: !fields.message.isValid}">
+          <label for="message">Your Message</label>
+          <textarea rows="5" id="message" :required="fields.message.required" v-model.trim="fields.message.value" @keyup="validateField('message')"></textarea>
+          <p v-if="!fields.message.isValid">Must provide a message for tutor</p>
+        </div>
+        <p v-if="!formIsValid">Form is invalid, please check your input</p>
+        <div class="actions">
+          <base-button>Send Message</base-button>
+        </div>
+      </form>
+    </section>
+  </div>
 </template>
 
 <script>
