@@ -44,11 +44,7 @@ export default {
         }
     },
     getters: {
-        requestsList(state) {
-            return state.requests;
-        },
-        hasRequests(state, getters) {
-            return getters.requestsList && getters.requestsList.length > 0
-        }
+        requestsList(state) { return state.requests; },
+        hasRequests(state, getters) { return getters.requestsList && getters.requestsList.length > 0; }
     }
 }

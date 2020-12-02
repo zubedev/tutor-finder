@@ -8,7 +8,7 @@
   <section>
     <base-card>
       <div class="controls">
-        <base-button mode="outline" @click="loadTutors" :disabled="isLoading">Refresh</base-button>
+        <base-button mode="outline" @click="loadTutors(true)" :disabled="isLoading">Refresh</base-button>
         <base-button link to="/register" v-if="!isTutor && !isLoading">Register as Tutor</base-button>
       </div>
       <base-spinner v-if="isLoading"></base-spinner>
@@ -59,9 +59,9 @@ export default {
   methods: {
     setFilters(filters) { this.filters = filters; },
     handleError() { this.errorMessage = null; },
-    async loadTutors() {
+    async loadTutors(forceUpdate = false) {
       this.isLoading = true;
-      try { await this.$store.dispatch('tutors/loadTutors'); }
+      try { await this.$store.dispatch('tutors/loadTutors', {forceUpdate: forceUpdate}); }
       catch (error) { this.errorMessage = error; }
       this.isLoading = false;
     },
