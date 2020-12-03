@@ -23,7 +23,8 @@ export default {
     actions: {
         async registerTutor(context, payload) {
             const userId = context.rootGetters['auth/getUserId'];
-            const res = await fetch(`https://tut0r-finder.firebaseio.com/tutors/${userId}.json`, {
+            const token = context.rootGetters['auth/getToken'];
+            const res = await fetch(`https://tut0r-finder.firebaseio.com/tutors/${userId}.json?auth=${token}`, {
                 method: 'PUT', body: JSON.stringify(payload)
             });
             const resBody = await res.json();

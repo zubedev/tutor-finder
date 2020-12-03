@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import UserAuth from "./pages/auth/UserAuth";
 import TutorList from "@/pages/tutors/TutorList";
 import TutorDetail from "@/pages/tutors/TutorDetail";
 import TutorRegister from "@/pages/tutors/TutorRegister";
@@ -11,6 +12,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', redirect: '/tutors' },
+        { path: '/auth', component: UserAuth },
         { path: '/tutors', component: TutorList },
         { path: '/tutors/:id', component: TutorDetail, props: true, children: [
                 { path: 'contact', component: ContactTutor } // /tutors/t1/contact

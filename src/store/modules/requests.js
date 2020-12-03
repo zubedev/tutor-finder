@@ -32,7 +32,8 @@ export default {
         },
         async loadRequests(context) {
             const userId = context.rootGetters['auth/getUserId'];
-            const res = await fetch(`https://tut0r-finder.firebaseio.com/requests/${userId}.json`);
+            const token = context.rootGetters['auth/getToken'];
+            const res = await fetch(`https://tut0r-finder.firebaseio.com/requests/${userId}.json?auth=${token}`);
             const resBody = await res.json();
             if (!res.ok) {
                 throw new Error(resBody.message || 'Failed to load requests');

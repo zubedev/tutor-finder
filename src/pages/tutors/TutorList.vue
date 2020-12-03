@@ -10,7 +10,7 @@
       <base-card>
         <div class="controls">
           <base-button mode="outline" @click="loadTutors(true)" :disabled="isLoading">Refresh</base-button>
-          <base-button link to="/register" v-if="!isTutor && !isLoading">Register as Tutor</base-button>
+          <base-button link to="/register" v-if="isAuthenticated && !isTutor && !isLoading">Register as Tutor</base-button>
         </div>
         <base-spinner v-if="isLoading"></base-spinner>
         <ul v-else-if="hasTutors">
@@ -47,6 +47,7 @@ export default {
     }
   },
   computed: {
+    isAuthenticated() { return this.$store.getters['auth/isAuthenticated']; },
     isTutor() { return this.$store.getters['tutors/isTutor']; },
     hasTutors() { return !this.isLoading && this.$store.getters['tutors/hasTutors']; },
     filteredTutors() {
