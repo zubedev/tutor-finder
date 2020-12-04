@@ -10,6 +10,7 @@
       <base-card>
         <div class="controls">
           <base-button mode="outline" @click="loadTutors(true)" :disabled="isLoading">Refresh</base-button>
+          <base-button link to="/auth?redirect=register" v-if="!isAuthenticated">Login to Register as Tutor</base-button>
           <base-button link to="/register" v-if="isAuthenticated && !isTutor && !isLoading">Register as Tutor</base-button>
         </div>
         <base-spinner v-if="isLoading"></base-spinner>

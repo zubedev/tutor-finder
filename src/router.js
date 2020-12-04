@@ -8,19 +8,27 @@ import ContactTutor from "@/pages/requests/ContactTutor";
 import RequestList from "@/pages/requests/RequestList";
 import NotFound from "@/pages/NotFound";
 
+import store from "./store";
+
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', redirect: '/tutors' },
-        { path: '/auth', component: UserAuth },
+        { path: '/auth', component: UserAuth, meta: {requiresUnauth: true} },
         { path: '/tutors', component: TutorList },
         { path: '/tutors/:id', component: TutorDetail, props: true, children: [
                 { path: 'contact', component: ContactTutor } // /tutors/t1/contact
             ]},
-        { path: '/register', component: TutorRegister },
-        { path: '/requests', component: RequestList },
+        { path: '/register', component: TutorRegister, meta: {requiresAuth: true} },
+        { path: '/requests', component: RequestList, meta: {requiresAuth: true} },
         { path: '/:notfound(.*)', component: NotFound }
     ]
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.requiresAuth && !store.getters['auth/isAuthenticated']) { next('/auth'); }
+    else if (to.meta.requiresUnauth && store.getters['auth/isAuthenticated']) { next('/tutors'); }
+    else { next(); }
 });
 
 export default router;

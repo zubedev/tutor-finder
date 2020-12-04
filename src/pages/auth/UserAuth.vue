@@ -82,7 +82,8 @@ export default {
         this.isLoading = false; return;
       }
       this.isLoading = false;
-      this.$router.replace('/tutors');
+      const redirectUrl = `/${this.$route.query.redirect || "tutors"}`;
+      this.$router.replace(redirectUrl);
     },
     handleError() { this.errorMessage = null; }
   }
