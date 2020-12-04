@@ -27,7 +27,7 @@ export default {
             else {
                 const tokenExpireDate = new Date().getTime() + +resBody.expiresIn * 1000;
                 localStorage.setItem('tokenExpireDate', tokenExpireDate.toString());
-                timer = setTimeout(() => { context.dispatch('logout') }, +resBody.expiresIn * 1000);
+                timer = setTimeout(() => context.dispatch('logout'), +resBody.expiresIn * 1000);
 
                 for (const key in resBody) { localStorage.setItem(key, resBody[key]); }
                 context.commit('setUser', resBody);
@@ -35,8 +35,8 @@ export default {
         },
         autoLogin(context) {
             const tokenExpireDate = localStorage.getItem('tokenExpireDate');
-            if (+tokenExpireDate < 5*60*1000) { return; }
-            else { timer = setTimeout(() => { context.dispatch('logout') }, new Date().getTime() - +tokenExpireDate); }
+            if (+tokenExpireDate - new Date().getTime() < 5*60*1000) { return; }
+            else { timer = setTimeout(() => context.dispatch('logout'), +tokenExpireDate - new Date().getTime()); }
 
             let payload = {};
             for (const key in context.state) { payload[key] = localStorage.getItem(key); }
