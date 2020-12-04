@@ -68,19 +68,10 @@ export default {
       if (!this.formIsValid) { return; }
 
       this.isLoading = true;
-      let formData = {};
+      let formData = {loginMode: this.loginMode};
       for (const field in this.fields) { formData[field] = this.fields[field].value; }
-      try {
-        if (this.loginMode) {
-          await this.$store.dispatch('auth/login', formData);
-        } else {
-          await this.$store.dispatch('auth/signup', formData);
-        }
-      }
-      catch (error) {
-        this.errorMessage = error;
-        this.isLoading = false; return;
-      }
+      try { await this.$store.dispatch('auth/authenticate', formData); }
+      catch (error) { this.errorMessage = error; this.isLoading = false; return; }
       this.isLoading = false;
       const redirectUrl = `/${this.$route.query.redirect || "tutors"}`;
       this.$router.replace(redirectUrl);

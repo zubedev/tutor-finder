@@ -1,47 +1,53 @@
+let timer;
+
 export default {
     namespaced: true,
     state() {
         return {
+            displayName: null,
+            email: null,
             localId: null,
             idToken: null,
-            email: null,
             refreshToken: null,
             expiresIn: null
         };
     },
     mutations: {
-        setUser(state, payload) {
-            for (const key in payload) { state[key] = payload[key]; }
-        }
+        setUser(state, payload) { for (const key in payload) { state[key] = payload[key]; } }
     },
     actions: {
-        async signup(context, payload) {
+        async authenticate(context, payload) {
+            let apiUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD600ZjQnK71aqWYunG44BtAeOEgAv7JP8';
+            if (!payload.loginMode) { apiUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD600ZjQnK71aqWYunG44BtAeOEgAv7JP8'; }
+
             payload.returnSecureToken = true;
-            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD600ZjQnK71aqWYunG44BtAeOEgAv7JP8', {
-                method: "POST", body: JSON.stringify(payload)
-            });
+            const res = await fetch(apiUrl, { method: "POST", body: JSON.stringify(payload) });
             const resBody = await res.json();
-            if (!res.ok) {
-                throw new Error(resBody.error.message || 'Failed to signup');
-            } else {
+            if (!res.ok) { throw new Error(resBody.error.message || 'Failed to authenticate'); }
+            else {
+                const tokenExpireDate = new Date().getTime() + +resBody.expiresIn * 1000;
+                localStorage.setItem('tokenExpireDate', tokenExpireDate.toString());
+                timer = setTimeout(() => { context.dispatch('logout') }, +resBody.expiresIn * 1000);
+
+                for (const key in resBody) { localStorage.setItem(key, resBody[key]); }
                 context.commit('setUser', resBody);
             }
         },
-        async login(context, payload) {
-            payload.returnSecureToken = true;
-            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD600ZjQnK71aqWYunG44BtAeOEgAv7JP8', {
-                method: "POST", body: JSON.stringify(payload)
-            });
-            const resBody = await res.json();
-            if (!res.ok) {
-                throw new Error(resBody.error.message || 'Failed to login');
-            } else {
-                context.commit('setUser', resBody);
-            }
+        autoLogin(context) {
+            const tokenExpireDate = localStorage.getItem('tokenExpireDate');
+            if (+tokenExpireDate < 5*60*1000) { return; }
+            else { timer = setTimeout(() => { context.dispatch('logout') }, new Date().getTime() - +tokenExpireDate); }
+
+            let payload = {};
+            for (const key in context.state) { payload[key] = localStorage.getItem(key); }
+            context.commit('setUser', payload);
         },
         logout(context) {
+            clearTimeout(timer);
+            localStorage.removeItem('tokenExpireDate');
+
             let payload = {};
-            for (const key in context.state) { payload[key] = null; }
+            for (const key in context.state) { payload[key] = null; localStorage.removeItem(key); }
             context.commit('setUser', payload);
         }
     },
